@@ -2,7 +2,8 @@ import "dotenv/config";
 import express, { Application } from "express";
 import bodyParser from "body-parser";
 import { createServer, Server } from "http";
-import startDbConnection from "./config/db.config";
+import startDbConnection from "config/db.config";
+import logger from "logger/logger";
 
 const app: Application = express();
 const server: Server = createServer(app);
@@ -13,6 +14,6 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 startDbConnection().then(() => {
   server.listen(PORT, () => {
-    console.log(`Server is listening on PORT: ${PORT}...`);
+    logger.debug(`Server is listening on PORT: ${PORT}...`);
   });
 });

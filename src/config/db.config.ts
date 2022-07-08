@@ -1,3 +1,4 @@
+import logger from "logger/logger";
 import mongoose from "mongoose";
 
 export default (): Promise<typeof mongoose> => {
@@ -9,13 +10,13 @@ export default (): Promise<typeof mongoose> => {
   const connection = mongoose.connect(dbURI, options);
   mongoose.connection
     .once("connected", () => {
-      console.log("DB is connected...");
+      logger.debug("DB is connected...");
     })
     .on("error", (error) => {
-      console.log(`Error connectin to DB: ${JSON.stringify(error)}`);
+      logger.error(`Error connectin to DB: ${JSON.stringify(error)}`);
     })
     .on("disconnected", () => {
-      console.log("Disconnected from DB.");
+      logger.debug("Disconnected from DB.");
     });
   process.on("SIGINT", async () => {
     await mongoose.connection.close();
