@@ -5,6 +5,7 @@ import { createServer, Server } from "http";
 import startDbConnection from "config/db.config";
 import logger from "logger/logger";
 import cors from "config/cors";
+import morgan from "config/morgan";
 
 const app: Application = express();
 const server: Server = createServer(app);
@@ -14,6 +15,7 @@ app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 cors(app);
+morgan(app);
 
 startDbConnection().then(() => {
   server.listen(PORT, () => {
