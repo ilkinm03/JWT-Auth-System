@@ -32,11 +32,11 @@ class AuthController {
         user._id
       );
       logger.debug("UserController.login -- SUCCESS");
-      res.cookie("x-danilov-access", accessToken, {
+      res.cookie("token-access", accessToken, {
         httpOnly: true,
         maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
       });
-      res.cookie("x-danilov-refresh", refreshToken, {
+      res.cookie("token-refresh", refreshToken, {
         httpOnly: true,
         maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
       });
@@ -49,10 +49,25 @@ class AuthController {
   public logout: RequestHandler = async (_req, res, next) => {
     try {
       logger.debug("UserController.logout -- START");
-      res.clearCookie("x-danilov-access");
-      res.clearCookie("x-danilov-refresh");
+      res.clearCookie("token-access");
+      res.clearCookie("token-refresh");
       res.status(200).send({ success: 1, message: "User logged out!" });
       logger.debug("UserController.logout -- SUCCESS");
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  public verifyAccount: RequestHandler = async (req, res, next) => {
+    try {
+      logger.debug("UserController.verifyAccount -- START");
+      const { verifyToken } = req.params;
+      await UserService.verifyAccount(verifyToken);
+      logger.debug("UserController.verifyAccount -- SUCCESS");
+      res.status(200).send({
+        success: 1,
+        message: "Your account has been verified!",
+      });
     } catch (error) {
       next(error);
     }

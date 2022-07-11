@@ -82,6 +82,18 @@ class UserService {
       throw error;
     }
   }
+
+  public async verifyAccount(verifyToken: string) {
+    try {
+      logger.debug("UserController.verifyAccount.UserService -- START");
+      const user: any = await UserRepository.findUserByToken(verifyToken);
+      await UserRepository.findUserByIdAndUpdate(user._id);
+      logger.debug("UserController.verifyAccount.UserService -- SUCCESS");
+      return user;
+    } catch (error) {
+      throw error;
+    }
+  }
 }
 
 export default new UserService();

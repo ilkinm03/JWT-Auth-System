@@ -42,6 +42,23 @@ class UserRepository {
     );
     logger.debug("UserRepository.updateUserLoginInfo -- SUCCESS");
   }
+
+  public async findUserByToken(token: string) {
+    logger.debug("UserRepository.findUserByToken -- START");
+    const user = await UserModel.findOne({ resetToken: token });
+    logger.debug("UserRepository.findUserByToken -- SUCCESS");
+    return user;
+  }
+
+  public async findUserByIdAndUpdate(userID: string) {
+    logger.debug("UserRepository.findUserByIdAndUpdate -- START");
+    const user = await UserModel.findByIdAndUpdate(userID, {
+      isVerified: true,
+      verifyToken: "",
+    });
+    logger.debug("UserRepository.findUserByIdAndUpdate -- SUCCESS");
+    return user;
+  }
 }
 
 export default new UserRepository();

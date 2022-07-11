@@ -22,7 +22,7 @@ class MailService {
   public async sendVerifyEmail(to: string, link: string) {
     const mailHTML = verifyHTML(to, link);
     const mailerOptions = {
-      from: `"Danilov" <${process.env.GMAIL_USER}>`,
+      from: `"Ilkin" <${process.env.GMAIL_USER}>`,
       to,
       subject: "Verify your account",
       text: "Please verify your account",
@@ -41,7 +41,7 @@ class MailService {
   public async sendResetEmail(to: string, link: string) {
     const mailHTML = resetHTML(to, link);
     const mailerOptions = {
-      from: `"Danilov" <${process.env.GMAIL_USER}>`,
+      from: `"Ilkin" <${process.env.GMAIL_USER}>`,
       to,
       subject: "Reset Password",
       text: "Here's the your reset password link",
