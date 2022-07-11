@@ -17,6 +17,13 @@ class UserRepository {
     return user;
   }
 
+  public async findUserById(userID: string) {
+    logger.debug("UserRepository.findUserById -- START");
+    const user = await UserModel.findById(userID);
+    logger.debug("UserRepository.findUserById -- SUCCESS");
+    return user;
+  }
+
   public async createUser(query: QuerySignup) {
     logger.debug("UserRepository.createUser -- START");
     let user = await UserModel.create(query);
