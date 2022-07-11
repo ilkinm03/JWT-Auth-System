@@ -94,6 +94,30 @@ class UserService {
       throw error;
     }
   }
+
+  public async forgotPassword(emailOrPhone: string) {
+    try {
+      logger.debug("UserController.forgotPassword.UserService -- START");
+      const user = await UserRepository.findUserByEmail(emailOrPhone);
+      if (!user) {
+        logger.warn(
+          "UserController.forgotPassword.UserService -- user not found"
+        );
+        throw ApiError.NotFoundException("User not found!");
+      }
+      const resetToken = await TokenService.generateResetToken(emailOrPhone);
+      user.resetToken = resetToken;
+      user.save();
+      await MailService.sendResetEmail(
+        emailOrPhone,
+        `${process.env.API_URL}/auth/reset-password/${resetToken}`
+      );
+      logger.debug("UserController.forgotPassword.UserService -- SUCCESS");
+      return user;
+    } catch (error) {
+      throw error;
+    }
+  }
 }
 
 export default new UserService();

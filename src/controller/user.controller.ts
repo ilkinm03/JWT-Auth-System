@@ -72,6 +72,21 @@ class AuthController {
       next(error);
     }
   };
+
+  public forgotPassword: RequestHandler = async (req, res, next) => {
+    try {
+      logger.debug("UserController.forgotPassword -- START");
+      const { emailOrPhone } = req.body;
+      await UserService.forgotPassword(emailOrPhone);
+      res.status(200).send({
+        success: 1,
+        message: "Reset password link has been sent to your email!",
+      });
+      logger.debug("UserController.forgotPassword -- SUCCESS");
+    } catch (error) {
+      next(error);
+    }
+  };
 }
 
 export default new AuthController();
