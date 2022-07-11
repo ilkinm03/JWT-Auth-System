@@ -152,6 +152,33 @@ class UserService {
       throw error;
     }
   }
+
+  public async refresh(refreshToken: string) {
+    try {
+      logger.debug("UserService.refresh -- START");
+      const userData: any = await TokenService.validateRefreshToken(
+        refreshToken
+      );
+      if (!userData) {
+        logger.warn("UserService.refresh -- not found");
+        throw ApiError.UnauthorizedError("You are not logged in!");
+      }
+      const user = await UserRepository.findUserById(userData.payload);
+      if (!user) {
+        logger.warn("UserService.refresh -- user not found");
+        throw ApiError.UnauthorizedError("You are not logged in!");
+      }
+      const tokens = await TokenService.generateTokens(user._id);
+      if (!tokens) {
+        logger.warn("UserService.refresh -- tokens not found");
+        throw ApiError.UnauthorizedError("You are not logged in!");
+      }
+      logger.debug("UserService.refresh -- SUCCESS");
+      return { ...tokens, user: user._id };
+    } catch (error) {
+      throw error;
+    }
+  }
 }
 
 export default new UserService();
