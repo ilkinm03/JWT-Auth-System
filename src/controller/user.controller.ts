@@ -87,6 +87,22 @@ class AuthController {
       next(error);
     }
   };
+
+  public resetPassword: RequestHandler = async (req, res, next) => {
+    try {
+      logger.debug("UserController.resetPassword -- START");
+      const { resetToken } = req.params;
+      const { password, confirmPassword } = req.body;
+      await UserService.resetPassword(resetToken, password, confirmPassword);
+      logger.debug("UserController.resetPassword -- SUCCESS");
+      res
+        .status(200)
+        .send({ success: 1, message: "Your password has been updated!" });
+      res.end();
+    } catch (error) {
+      next(error);
+    }
+  };
 }
 
 export default new AuthController();

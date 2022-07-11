@@ -59,6 +59,16 @@ class UserRepository {
     logger.debug("UserRepository.findUserByIdAndUpdate -- SUCCESS");
     return user;
   }
+
+  public async resetUserPassword(resetToken: string, newPassword: string) {
+    logger.debug("UserRepository.resetUserPassword -- START");
+    const user = await UserModel.findOneAndUpdate(
+      { resetToken },
+      { password: newPassword, resetToken: "" }
+    );
+    logger.debug("UserRepository.resetUserPassword -- SUCCESS");
+    return user;
+  }
 }
 
 export default new UserRepository();

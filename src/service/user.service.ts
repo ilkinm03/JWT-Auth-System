@@ -118,6 +118,40 @@ class UserService {
       throw error;
     }
   }
+
+  public async resetPassword(
+    resetToken: string,
+    password: string,
+    confirmPassword: string
+  ) {
+    logger.debug("UserController.resetPassword.UserService -- START");
+    if (password !== confirmPassword) {
+      logger.warn("UserController.resetPassword.UserService -- not same");
+      throw ApiError.BadRequest("Password are not same!");
+    }
+    try {
+      const user = await UserRepository.findUserByToken(resetToken);
+      if (!user) {
+        logger.warn(
+          "UserController.resetPassword.UserService -- user not found"
+        );
+        throw ApiError.NotFoundException("User not found!");
+      }
+      if (user.resetToken !== resetToken) {
+        logger.warn("UserController.resetPassword.UserService -- expired");
+        throw ApiError.GeneralException("The link has expired!");
+      }
+      const hashPassword = await bcrypt.hash(password, 12);
+      const newUser = await UserRepository.resetUserPassword(
+        resetToken,
+        hashPassword
+      );
+      logger.debug("UserController.resetPassword.UserService -- SUCCESS");
+      return newUser;
+    } catch (error) {
+      throw error;
+    }
+  }
 }
 
 export default new UserService();

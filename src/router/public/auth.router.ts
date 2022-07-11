@@ -8,5 +8,6 @@ router.post("/login", UserController.login);
 router.post("/logout", UserController.logout);
 router.patch("/verify-account/:verifyToken", UserController.verifyAccount);
 router.post("/forgot-password", UserController.forgotPassword);
+router.patch("/reset-password/:resetToken", UserController.resetPassword);
 
 export default router;
