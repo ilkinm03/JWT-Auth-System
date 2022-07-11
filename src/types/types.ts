@@ -12,3 +12,8 @@ export type QuerySignup = {
   role?: string;
   password: string;
 };
+
+export type QueryLogin = {
+  email?: string;
+  phone?: string;
+};

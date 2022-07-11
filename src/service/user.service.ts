@@ -7,7 +7,7 @@ import MailService from "./mail_service/mail.service";
 import TokenService from "./token.service";
 import logger from "logger/logger";
 import ApiError from "exception/api.error";
-import { Signup, QuerySignup } from "types/types";
+import { Signup, QuerySignup, QueryLogin } from "types/types";
 
 class UserService {
   public signup: Signup = async (
@@ -53,6 +53,35 @@ class UserService {
       throw error;
     }
   };
+
+  public async login(emailOrPhone: string, password: string) {
+    logger.debug("UserController.login.UserService -- START");
+    try {
+      const query: QueryLogin = {};
+      const result = UserUtil.checkEmailOrPhone(emailOrPhone);
+      result ? (query.email = emailOrPhone) : (query.phone = emailOrPhone);
+      const user = query.email
+        ? await UserRepository.findUserByEmail(query.email)
+        : query.phone && (await UserRepository.findUserByPhone(query.phone));
+      if (!user) {
+        logger.warn("UserController.login.UserService -- not found");
+        throw ApiError.BadRequest("Email or password is incorrect!");
+      }
+      const isPasswordCorrect: boolean = await bcrypt.compare(
+        password,
+        user.password
+      );
+      if (!isPasswordCorrect) {
+        logger.warn("UserController.login.UserService -- incorrect password");
+        throw ApiError.BadRequest("Email or password is incorrect!");
+      }
+      await UserRepository.updateUserLoginInfo(user._id);
+      logger.debug("UserController.login.UserService -- SUCCESS");
+      return user;
+    } catch (error) {
+      throw error;
+    }
+  }
 }
 
 export default new UserService();

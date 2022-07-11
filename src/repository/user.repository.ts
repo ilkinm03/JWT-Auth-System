@@ -30,6 +30,18 @@ class UserRepository {
     logger.debug("UserRepository.updateUserVerifyToken -- SUCCESS");
     return user;
   }
+  public async updateUserLoginInfo(userID: string) {
+    logger.debug("UserRepository.updateUserLoginInfo -- START");
+    await UserModel.findByIdAndUpdate(
+      userID,
+      {
+        isActive: false && true,
+        lastLogin: new Date(),
+      },
+      { new: true }
+    );
+    logger.debug("UserRepository.updateUserLoginInfo -- SUCCESS");
+  }
 }
 
 export default new UserRepository();
