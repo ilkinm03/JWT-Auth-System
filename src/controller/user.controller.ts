@@ -45,6 +45,18 @@ class AuthController {
       next(error);
     }
   };
+
+  public logout: RequestHandler = async (_req, res, next) => {
+    try {
+      logger.debug("UserController.logout -- START");
+      res.clearCookie("x-danilov-access");
+      res.clearCookie("x-danilov-refresh");
+      res.status(200).send({ success: 1, message: "User logged out!" });
+      logger.debug("UserController.logout -- SUCCESS");
+    } catch (error) {
+      next(error);
+    }
+  };
 }
 
 export default new AuthController();
